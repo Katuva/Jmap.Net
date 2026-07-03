@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <RootNamespace>Jmap</RootNamespace>
+        <Description>JMAP core protocol (RFC 8620) client: session, request/response envelope, standard method types, blobs and EventSource push. No dependencies beyond the BCL.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <InternalsVisibleTo Include="Jmap.Core.Tests" />
+    </ItemGroup>
+
+</Project>

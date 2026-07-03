@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <RootNamespace>Jmap.Mail</RootNamespace>
+        <Description>JMAP for Mail (RFC 8621) object model and method types: Mailbox, Email, Thread, SearchSnippet, Identity, EmailSubmission and VacationResponse.</Description>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Jmap.Core\Jmap.Core.csproj" />
+        <InternalsVisibleTo Include="Jmap.Mail.Tests" />
+    </ItemGroup>
+
+</Project>

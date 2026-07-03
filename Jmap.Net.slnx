@@ -1,0 +1,13 @@
+<Solution>
+  <Folder Name="/samples/">
+    <Project Path="samples/JmapCli/JmapCli.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/Jmap.Core/Jmap.Core.csproj" />
+    <Project Path="src/Jmap.Mail/Jmap.Mail.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/Jmap.Core.Tests/Jmap.Core.Tests.csproj" />
+    <Project Path="tests/Jmap.Mail.Tests/Jmap.Mail.Tests.csproj" />
+  </Folder>
+</Solution>
