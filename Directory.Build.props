@@ -16,7 +16,7 @@
         <RepositoryUrl>https://github.com/Katuva/Jmap.Net</RepositoryUrl>
         <PackageProjectUrl>https://github.com/Katuva/Jmap.Net</PackageProjectUrl>
         <Version>0.1.0</Version>
-        <PackageTags>jmap;email;mail;rfc8620;rfc8621</PackageTags>
+        <PackageTags>jmap;email;mail;rfc8620;rfc8621;rfc8887;rfc9007;rfc9219;rfc9404;rfc9425</PackageTags>
     </PropertyGroup>
 
 </Project>

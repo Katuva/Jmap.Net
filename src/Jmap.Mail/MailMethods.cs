@@ -1,6 +1,7 @@
 namespace Jmap.Mail;
 
-/// <summary>Every method name RFC 8621 defines, for building <see cref="Invocation"/>s.</summary>
+/// <summary>Every method name RFC 8621 defines, plus the MDN extension (RFC 9007), for
+/// building <see cref="Invocation"/>s.</summary>
 public static class MailMethods
 {
     public const string MailboxGet = "Mailbox/get";
@@ -35,6 +36,10 @@ public static class MailMethods
 
     public const string VacationResponseGet = "VacationResponse/get";
     public const string VacationResponseSet = "VacationResponse/set";
+
+    // RFC 9007 (urn:ietf:params:jmap:mdn)
+    public const string MdnSend = "MDN/send";
+    public const string MdnParse = "MDN/parse";
 }
 
 // ── Method shapes that extend the RFC 8620 standards with mail-specific arguments ──────────

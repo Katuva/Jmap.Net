@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <RootNamespace>Jmap.Mail</RootNamespace>
-        <Description>JMAP for Mail (RFC 8621) object model and method types: Mailbox, Email, Thread, SearchSnippet, Identity, EmailSubmission and VacationResponse.</Description>
+        <Description>JMAP for Mail (RFC 8621) object model and method types: Mailbox, Email, Thread, SearchSnippet, Identity, EmailSubmission and VacationResponse, plus MDN read receipts (RFC 9007) and S/MIME verification status (RFC 9219).</Description>
     </PropertyGroup>
 
     <ItemGroup>

@@ -42,6 +42,16 @@ public sealed record Email
     public IReadOnlyList<EmailBodyPart>? Attachments { get; init; }
     public bool? HasAttachment { get; init; }
     public string? Preview { get; init; }
+
+    // S/MIME verification (RFC 9219, urn:ietf:params:jmap:smimeverify). Server-set, and
+    // only returned when named explicitly in the /get properties argument.
+    /// <summary>See <see cref="SmimeStatuses"/>; null when the message carries no signature.</summary>
+    public string? SmimeStatus { get; init; }
+    /// <summary>Like smimeStatus but evaluated as of <see cref="ReceivedAt"/>.</summary>
+    public string? SmimeStatusAtDelivery { get; init; }
+    public IReadOnlyList<string>? SmimeErrors { get; init; }
+    [JsonConverter(typeof(UtcDateConverter))]
+    public DateTimeOffset? SmimeVerifiedAt { get; init; }
 }
 
 /// <summary>A parsed mailbox address (RFC 8621 §4.1.2.3).</summary>
@@ -90,4 +100,18 @@ public static class EmailKeywords
     public const string Phishing = "$phishing";
     public const string Junk = "$junk";
     public const string NotJunk = "$notjunk";
+    /// <summary>An MDN has been sent for this email (RFC 9007); MDN/send sets it.</summary>
+    public const string MdnSent = "$mdnsent";
+}
+
+/// <summary>The registered smimeStatus values (RFC 9219 §4.1). Servers may return other
+/// tokens; treat unrecognised ones as "unknown" or "signed/failed".</summary>
+public static class SmimeStatuses
+{
+    public const string Unknown = "unknown";
+    public const string Signed = "signed";
+    public const string SignedVerified = "signed/verified";
+    public const string SignedFailed = "signed/failed";
+    public const string EncryptedSignedVerified = "encrypted+signed/verified";
+    public const string EncryptedSignedFailed = "encrypted+signed/failed";
 }

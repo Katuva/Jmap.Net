@@ -30,6 +30,14 @@ public sealed record EmailFilterCondition : JmapFilter
     public string? Body { get; init; }
     /// <summary>[headerName] to test presence, or [headerName, value] to match a value.</summary>
     public IReadOnlyList<string>? Header { get; init; }
+
+    // S/MIME verification (RFC 9219 §4.2, urn:ietf:params:jmap:smimeverify)
+    /// <summary>Whether the message has any S/MIME signature (smimeStatus non-null).</summary>
+    public bool? HasSmime { get; init; }
+    /// <summary>Whether smimeStatus is (encrypted+)signed/verified.</summary>
+    public bool? HasVerifiedSmime { get; init; }
+    /// <summary>Like hasVerifiedSmime, but against smimeStatusAtDelivery.</summary>
+    public bool? HasVerifiedSmimeAtDelivery { get; init; }
 }
 
 /// <summary>A Mailbox/query filter condition (RFC 8621 §2.3). Note: filtering for a null

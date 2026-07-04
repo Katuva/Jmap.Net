@@ -58,4 +58,9 @@ public static class JmapErrorTypes
     public const string RequestTooLarge = "requestTooLarge";
     public const string CannotCalculateChanges = "cannotCalculateChanges";
     public const string StateMismatch = "stateMismatch";
+    // /copy and Blob/copy (RFC 8620 §5.4, §6.3)
+    public const string FromAccountNotFound = "fromAccountNotFound";
+    public const string FromAccountNotSupportedByMethod = "fromAccountNotSupportedByMethod";
+    /// <summary>Blob/lookup (RFC 9404): a typeName is unknown or its capability wasn't used.</summary>
+    public const string UnknownDataType = "unknownDataType";
 }

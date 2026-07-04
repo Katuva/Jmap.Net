@@ -5,11 +5,16 @@ A dependency-light .NET client library for **JMAP**, the JSON Meta Application P
 - **`Jmap.Core`** — RFC 8620: the session resource, the request/response envelope with
   method batching and back-references (`#argument`), the standard `/get` `/set` `/changes`
   `/query` `/queryChanges` `/copy` method shapes, filters and patch objects, blob
-  upload/download, and push over EventSource. No dependencies beyond the BCL.
+  upload/download, push over EventSource, and `PushSubscription` objects for Web Push.
+  Plus the core extensions: JMAP over WebSocket (RFC 8887), blob management —
+  `Blob/upload`, `Blob/get`, `Blob/lookup` (RFC 9404), and quotas (RFC 9425).
+  No dependencies beyond the BCL.
 - **`Jmap.Mail`** — RFC 8621: the full mail object model (`Mailbox`, `Email`, `Thread`,
   `SearchSnippet`, `Identity`, `EmailSubmission`, `VacationResponse`), every method name and
   the mail-specific method arguments (body-fetch controls, `collapseThreads`,
-  `onSuccessUpdateEmail`, `Email/import`, `Email/parse`, …).
+  `onSuccessUpdateEmail`, `Email/import`, `Email/parse`, …). Plus the mail extensions:
+  MDN read receipts — `MDN/send`, `MDN/parse` (RFC 9007) and S/MIME verification status
+  (RFC 9219).
 
 Targets `net8.0` and `net10.0`. Licensed MIT.
 
@@ -60,6 +65,16 @@ Sending mail is a draft `Email/set` create plus an `EmailSubmission/set` — wit
 `client.GetEventsAsync(...)`, an `IAsyncEnumerable<StateChange>` over the session's
 EventSource endpoint. Blobs are `UploadBlobAsync`/`DownloadBlobAsync`.
 
+When the server advertises `urn:ietf:params:jmap:websocket`, the same requests can run
+over one socket instead (RFC 8887), with push on the same connection:
+
+```csharp
+await using var socket = await client.ConnectWebSocketAsync();
+await socket.EnablePushAsync(["Email", "Mailbox"]);
+var response = await socket.SendAsync(request);           // correlated by id, so calls
+await foreach (var change in socket.GetEventsAsync()) { } // and events interleave freely
+```
+
 `samples/JmapCli` is a runnable smoke test:
 
 ```bash
@@ -86,9 +101,14 @@ JMAP_SESSION_URL=https://api.fastmail.com/jmap/session JMAP_TOKEN=... \
 - [x] RFC 8620 core: session, envelope, back-references, standard methods, filters,
   patches, blobs, EventSource push
 - [x] RFC 8621 mail: full object model, all method names + mail-specific shapes
-- [ ] PushSubscription objects (RFC 8620 §7.2 — server-initiated Web Push; EventSource
-  covers desktop clients)
-- [ ] WebSocket transport (RFC 8887)
+- [x] PushSubscription objects (RFC 8620 §7.2 — server-initiated Web Push)
+- [x] WebSocket transport (RFC 8887), including per-connection push
+- [x] MDN read receipts (RFC 9007: `MDN/send`, `MDN/parse`, `$mdnsent`)
+- [x] S/MIME verification status (RFC 9219: `smimeStatus` &co. + query filters)
+- [x] Blob management (RFC 9404: `Blob/upload`, `Blob/get`, `Blob/lookup`)
+- [x] Quotas (RFC 9425)
+- [ ] Sieve script management (RFC 9661) — server-side filter editing, beyond a mail
+  client's core needs
 - [ ] Higher-level sync helper (state tracking + `/changes` loops) once a consumer proves
   the shape
 - [ ] Integration test suite against a containerised Stalwart server

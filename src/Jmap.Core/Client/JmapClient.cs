@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Net.WebSockets;
 using System.Runtime.CompilerServices;
 using System.Text.Json;
 using Jmap.Json;
@@ -7,7 +8,8 @@ namespace Jmap;
 
 /// <summary>
 /// A JMAP client over HTTP (RFC 8620): fetches the session, executes API requests, moves
-/// blobs, and listens for push events over the session's EventSource endpoint.
+/// blobs, and listens for push events over the session's EventSource endpoint. It can also
+/// open JMAP-over-WebSocket connections (RFC 8887) via <see cref="ConnectWebSocketAsync"/>.
 /// </summary>
 public sealed class JmapClient : IDisposable
 {
@@ -134,6 +136,39 @@ public sealed class JmapClient : IDisposable
                 yield return change;
             }
         }
+    }
+
+    /// <summary>
+    /// Opens a JMAP-over-WebSocket connection (RFC 8887) to the session's websocket
+    /// capability endpoint, negotiating the "jmap" subprotocol with the same credentials.
+    /// The connection is independent of this client; dispose it separately.
+    /// </summary>
+    public async Task<JmapWebSocketConnection> ConnectWebSocketAsync(CancellationToken cancellationToken = default)
+    {
+        var session = await RequireSessionAsync(cancellationToken);
+        if (!session.TryGetCapability<WebSocketCapability>(JmapCapabilities.WebSocket, out var capability))
+        {
+            throw new JmapException($"The server does not advertise '{JmapCapabilities.WebSocket}'.");
+        }
+
+        var socket = new ClientWebSocket();
+        try
+        {
+            socket.Options.AddSubProtocol("jmap");
+            if (Options.BuildAuthorization() is { } authorization)
+            {
+                socket.Options.SetRequestHeader("Authorization", authorization.ToString());
+            }
+
+            await socket.ConnectAsync(new Uri(capability!.Url), cancellationToken);
+        }
+        catch
+        {
+            socket.Dispose();
+            throw;
+        }
+
+        return new JmapWebSocketConnection(socket, capability.SupportsPush);
     }
 
     public void Dispose()
